@@ -27,20 +27,12 @@ db.connect((err) => {
   }
 })
 
-// Elasticsearch 클라이언트 설정
-const esClient = new Client({
-  node: 'http://localhost:9200', // ElasticSearch 서버 주소
-})
-
-// multer를 사용하여 파일 저장 설정
-const upload = multer({ dest: 'uploads/' })
-
+//이거 이제 테스트 끝나서 지워도 될듯듯
 // local 5000화면면
 app.get('/', (req, res) => {
   res.send('백엔드 서버 작동 중!')
 })
 
-//이거 이제 테스트 끝나서 지워도 될듯듯
 app.get('/api/hello', (req, res) => {
   res.json({ message: '서버 정상 연결 테스트ing' })
 })
@@ -56,6 +48,13 @@ app.get('/api/messages', (req, res) => {
     }
   })
 })
+
+const esClient = new Client({
+  node: 'http://localhost:9200',
+})
+
+// multer를 사용하여 파일 저장
+const upload = multer({ dest: 'uploads/' })
 
 // 파일 업로드 및 Elasticsearch에 저장
 app.post('/api/upload', upload.single('logfile'), async (req, res) => {
@@ -74,7 +73,7 @@ app.post('/api/upload', upload.single('logfile'), async (req, res) => {
         index: 'logs', // 로그 데이터가 저장될 인덱스 이름
         document: {
           message: line, // 로그 메시지
-          timestamp: new Date().toISOString(), // 로그 타임스탬프
+          timestamp: new Date().toISOString(),
         },
       })
     }
@@ -89,7 +88,6 @@ app.post('/api/upload', upload.single('logfile'), async (req, res) => {
     console.error('Elasticsearch 인덱스 오류:', err)
     res.status(500).json({ message: '서버 오류가 발생했습니다.' })
   } finally {
-    // 업로드된 파일 삭제 (옵션, 필요 시)
     fs.unlinkSync(filePath)
   }
 })

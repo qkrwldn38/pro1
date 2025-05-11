@@ -45,7 +45,6 @@ function Home() {
       })
       const data = await res.json()
       console.log('분석 결과:', data)
-      // 필요한 경우 분석 결과를 상태로 저장하고 표시할 수 있음
     } catch (err) {
       console.error('파일 업로드 실패:', err)
     }
